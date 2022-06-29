@@ -1,0 +1,473 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+
+public class register extends javax.swing.JFrame {
+
+    Connection con;
+    Statement stat;
+    ResultSet rs;
+    String sql;
+    
+    public register() {
+        initComponents();
+        koneksi DB = new koneksi();
+        DB.config();
+        con = DB.con;
+        stat = DB.stm;
+    }
+    
+            void tampildata(){
+        DefaultTableModel tbl=new DefaultTableModel();
+        tbl.addColumn("id");
+        tbl.addColumn("Nama Lengkap");
+        tbl.addColumn("Username");
+        tbl.addColumn("Password");
+        try{
+        String sql="select*from admin";
+        stat=con.createStatement();
+        rs=stat.executeQuery(sql);
+        while(rs.next()){
+        tbl.addRow(new Object[]{rs.getString(1),rs.getString(2),
+        rs.getString(3),rs.getString(4)});
+        }
+        tbl1.setModel(tbl);
+        }catch(Exception e){}
+        }
+            
+            void caridata(){
+                DefaultTableModel tbl=new DefaultTableModel();
+                tbl.addColumn("id");
+                tbl.addColumn("Nama Lengkap");
+                tbl.addColumn("Username");
+                tbl.addColumn("Password");
+                try{
+                String sql="SELECT * FROM admin WHERE Username like'%"+txtSearch.getText()+"%'";
+                stat=con.createStatement();
+                rs=stat.executeQuery(sql);
+                while(rs.next()){
+                tbl.addRow(new Object[]{rs.getString(1),rs.getString(2),
+                rs.getString(3),rs.getString(4)});
+                }
+                tbl1.setModel(tbl);
+                }catch(Exception e){}
+                }
+            
+            void updatedata(){
+                try {
+                 stat = con.createStatement();
+                 stat.executeUpdate("update admin SET nama ='"+txtNamaLengkap.getText()+"', username = '"+txtUsername.getText()+"', password ='"+txtPassword.getText()+"' WHERE id = '"+txtID.getText()+"'");
+                 tampildata();
+                 JOptionPane.showMessageDialog(null, "Update Berhasil");
+                 } catch (Exception e) {
+                 e.printStackTrace();
+                 }
+                }
+            
+            void deletedata(){
+                try {
+                stat = con.createStatement();
+                stat.executeUpdate("Delete from admin where id= '" +txtID.getText() + "'");
+                 JOptionPane.showMessageDialog(null, "Delete Berhasil");
+                 txtID.setText("");
+                 txtNamaLengkap.setText("");
+                 txtUsername.setText("");
+                 txtPassword.setText("");
+                 } catch (Exception e) {
+                 e.printStackTrace();
+                 }
+                }
+            
+            public void excel() throws FileNotFoundException, IOException{
+ try{
+ Class.forName("com.mysql.jdbc.Driver");
+ com.mysql.jdbc.Connection koneksi = (com.mysql.jdbc.Connection)
+DriverManager.getConnection("jdbc:mysql://localhost:3306/db_login","root","");;
+ com.mysql.jdbc.Statement statement = (com.mysql.jdbc.Statement)
+koneksi.createStatement();
+ FileOutputStream fileOut;
+ // Hasil Export
+ fileOut = new FileOutputStream("D:/data register.xls");
+ HSSFWorkbook workbook = new HSSFWorkbook();
+ HSSFSheet worksheet = workbook.createSheet("Sheet 0");
+ // Nama Field
+ Row row1 = worksheet.createRow((short)0);
+ row1.createCell(0).setCellValue("ID");
+ row1.createCell(1).setCellValue("Nama Lengkap");
+ row1.createCell(2).setCellValue("Username");
+ row1.createCell(3).setCellValue("Password");
+ Row row2 ;
+ ResultSet rs = statement.executeQuery("select* from admin");
+ while(rs.next()){
+ int a = rs.getRow();
+row2 = worksheet.createRow((short)a);
+ // Sesuaikan dengan Jumlah Field
+ row2.createCell(0).setCellValue(rs.getString(1));
+ row2.createCell(1).setCellValue(rs.getString(2));
+ row2.createCell(2).setCellValue(rs.getString(3));
+ row2.createCell(3).setCellValue(rs.getString(4));
+
+ }
+ workbook.write(fileOut);
+ fileOut.flush();
+ fileOut.close();
+ rs.close();
+ statement.close();
+ koneksi.close();
+ JOptionPane.showMessageDialog(this,"Save to Excel Success !!");
+ }catch(ClassNotFoundException e){
+ System.out.println(e);
+ }catch(SQLException ex){
+ System.out.println(ex);
+ }catch(IOException ioe){
+ System.out.println(ioe);
+ }
+ }
+            
+             
+
+
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        txtID = new javax.swing.JTextField();
+        txtNamaLengkap = new javax.swing.JTextField();
+        txtUsername = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JTextField();
+        btnSignUp = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbl1 = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
+        txtSearch = new javax.swing.JTextField();
+        btnExport = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(510, 800));
+        getContentPane().setLayout(new java.awt.GridLayout(1, 0));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        jLabel1.setText("Register");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, 6, -1, -1));
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel2.setText("ID");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 71, -1, -1));
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel3.setText("Nama Lengkap");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 125, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel4.setText("Username");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 179, -1, -1));
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel5.setText("Password");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 233, -1, -1));
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel6.setText(":");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 71, -1, -1));
+
+        jLabel7.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel7.setText(":");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 125, -1, -1));
+
+        jLabel8.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel8.setText(":");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 179, -1, -1));
+
+        jLabel9.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel9.setText(":");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 233, -1, -1));
+        jPanel1.add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(234, 75, 228, 32));
+        jPanel1.add(txtNamaLengkap, new org.netbeans.lib.awtextra.AbsoluteConstraints(234, 129, 228, 32));
+        jPanel1.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(234, 183, 228, 32));
+        jPanel1.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(234, 233, 228, 32));
+
+        btnSignUp.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnSignUp.setText("Sign Up");
+        btnSignUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSignUpActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSignUp, new org.netbeans.lib.awtextra.AbsoluteConstraints(353, 283, -1, 42));
+
+        btnBack.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(254, 283, 81, 42));
+
+        tbl1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nama", "Username", "Password"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbl1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbl1);
+        if (tbl1.getColumnModel().getColumnCount() > 0) {
+            tbl1.getColumnModel().getColumn(0).setResizable(false);
+            tbl1.getColumnModel().getColumn(1).setResizable(false);
+            tbl1.getColumnModel().getColumn(2).setResizable(false);
+            tbl1.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 440, -1, 260));
+
+        jButton2.setText("Refresh");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 710, -1, -1));
+        jPanel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 170, 40));
+
+        btnExport.setText("EXPORT");
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnExport, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 80, -1));
+
+        btnSearch.setText("SEARCH");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 400, 80, -1));
+
+        btnEdit.setText("EDIT");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEdit, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 400, 60, -1));
+
+        btnDelete.setText("DELETE");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 400, 80, -1));
+
+        getContentPane().add(jPanel1);
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpActionPerformed
+         try {
+    stat = con.createStatement();
+    stat.executeUpdate("INSERT INTO admin VALUES('" 
+        + txtID.getText() + "','"
+        + txtNamaLengkap.getText() + "','"
+        + txtUsername.getText() + "','"
+        + txtPassword.getText() + "')");
+    JOptionPane.showMessageDialog(null, "Simpan Berhasil");
+    txtID.setText("");
+    txtNamaLengkap.setText("");
+    txtUsername.setText("");
+    txtPassword.setText("");
+  } catch (Exception e) {
+    e.printStackTrace();
+  }
+    }//GEN-LAST:event_btnSignUpActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        this.setVisible(false);
+        new login().setVisible(true);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        tampildata();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
+        try {
+            excel();
+        } catch (IOException ex) {
+            Logger.getLogger(register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnExportActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        caridata();
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        updatedata();
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        deletedata();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void tbl1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl1MouseClicked
+        try {
+
+            int row =tbl1.getSelectedRow();
+            String tabel_klik=(tbl1.getModel().getValueAt(row, 0).toString());
+            java.sql.Statement stm = con.createStatement();
+            java.sql.ResultSet sql = stm.executeQuery("select * from admin where id='"+tabel_klik+"'");
+             if(sql.next()){
+             String id = sql.getString("id");
+             txtID.setText(id);
+             String nama = sql.getString("Nama_Lengkap");
+            txtNamaLengkap.setText(nama);
+             String user = sql.getString("username");
+            txtUsername.setText(user);
+             String pass = sql.getString("password");
+            txtPassword.setText(pass);
+             }
+            } catch (Exception e) {}
+
+    }//GEN-LAST:event_tbl1MouseClicked
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new register().setVisible(true);
+            }
+        });
+    }
+    
+//     void tampildata(){
+//        DefaultTableModel tbl=new DefaultTableModel();
+//        tbl.addColumn("id");
+//        tbl.addColumn("Nama Lengkap");
+//        tbl.addColumn("Username");
+//        tbl.addColumn("Password");
+//        try{
+//        String sql="select*from admin";
+//        stat=con.createStatement();
+//        rs=stat.executeQuery(sql);
+//        while(rs.next()){
+//        tbl.addRow(new Object[]{rs.getString(1),rs.getString(2),
+//        rs.getString(3),rs.getString(4)});
+//        }
+//        tbl1.setModel(tbl);
+//        }catch(Exception e){}
+//        }
+
+    
+    
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnExport;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSignUp;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tbl1;
+    private javax.swing.JTextField txtID;
+    private javax.swing.JTextField txtNamaLengkap;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtUsername;
+    // End of variables declaration//GEN-END:variables
+}
